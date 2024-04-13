@@ -56,5 +56,10 @@ namespace Lab_12_OOP
             }
             return false;
         }
+
+        public HElement<T> Clone()
+        {
+            return new HElement<T>(Value.Clone())
+        }
     }
 }

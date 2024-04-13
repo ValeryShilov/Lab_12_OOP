@@ -50,12 +50,12 @@ namespace Lab_12_OOP
                 Console.WriteLine("2.Добавление элемента в хеш-таблицу(вручную)");
                 Console.WriteLine("3.Заполнение хеш-таблицы случайными значениями");
                 Console.WriteLine("4.Печать коллекции");
-                Console.WriteLine("5.Демонстрация удаления элемента по значению");
+                Console.WriteLine("5.Удаления элемента по значению");
                 Console.WriteLine("6.Демонстрация копирования");
                 Console.WriteLine("7.Демонстрация клонирования");
                 Console.WriteLine("8.Удаление хеш-таблицы из памяти");
                 Console.WriteLine("9.Перебор коллекции циклом foreach");
-                Console.WriteLine("10.Поиск элемента по ключу");
+                Console.WriteLine("10.Поиск элемента");
                 Console.WriteLine("11.Удаление элемента по ключу");
 
                 Console.WriteLine("0.Выход");
@@ -152,43 +152,63 @@ namespace Lab_12_OOP
 
                         //    hashTableGoods.DeleteEl();
                         //}
-                        Goods[] goodsArr = { new Goods("One", 100, 20), new Goods("Two", 120, 23), new Goods("Three", 120, 13), new Goods("Four", 120, 45), new Goods("Five", 130, 10), new Goods("Six", 230, 51) };
-                        Goods g1 = new Goods("One", 100, 20);
-                        Goods g2 = new Goods("Two", 120, 23);
-                        Goods g3 = new Goods("Three", 120, 13);
-                        Goods g4 = new Goods("Four", 120, 45);
-                        Goods g5 = new Goods("Five", 130, 10);
-                        Goods g6 = new Goods("Six", 230, 51);
-                        hashTableGoods.Add(g1);
-                        hashTableGoods.Add(g2);
-                        hashTableGoods.Add(g3);
-                        hashTableGoods.Add(g4);
-                        hashTableGoods.Add(g5);
-                        hashTableGoods.Add(g6);
-                        hashTableGoods.Print();
-                        //int number = Menu.ReadInt("Выберите какой элемент удалить: ", "Ошибка, данный элемент нельзя выбрать для удаления", "->", 1, 5);
-                        hashTableGoods.Remove(g5);
+                        //Goods[] goodsArr = { new Goods("One", 100, 20), new Goods("Two", 120, 23), new Goods("Three", 120, 13), new Goods("Four", 120, 45), new Goods("Five", 130, 10), new Goods("Six", 230, 51) };
+                        //foreach(var item in goodsArr)
+                        //{
+                        //    try
+                        //    {
+                        //        hashTableGoods.Add(item);
+                        //    }
+                        //    catch(Exception e)
+                        //    {
+                        //        Console.WriteLine(e.Message);
+                        //    }
+                        //}
+
+                        //hashTableGoods.Print();
+                        //int number = Menu.ReadInt("Выберите какой элемент удалить: ", "Ошибка, данный элемент нельзя выбрать для удаления", "->", 1, 6);
+                        Console.WriteLine("Список всех элементов коллекции:");
+                        foreach (var item in hashTableGoods)
+                        {
+                            item.Show();
+                        }
+                        Console.WriteLine("Введите элемент для удаления");
+                        Goods deleteEl = new Goods();
+                        deleteEl.Init();
+
+                        hashTableGoods.Remove(deleteEl);
+                        Console.WriteLine("Элемент удален");
                         Console.WriteLine();
                         hashTableGoods.Print();
                         break;
                     case "6":
+                        hashTableGoods.Add(new Goods("AddedTov", 99, 99));
                         HashTable<Goods> copyHashTable = hashTableGoods.ShallowCopy();
                         Console.WriteLine("Скопированная коллекция до изменения\n");
                         copyHashTable.Print();
 
-                        hashTableGoods.Add(new Goods("AddedTov", 99, 99));
+                        hashTableGoods.table[hashTableGoods.GetIndex(new Goods("AddedTov", 99, 99))].Value.Name = "New name";
                         Console.WriteLine("Скопированная коллекция после изменения\n");
                         copyHashTable.Print();
                         break;
                     case "7":
-                        var cloneHashTable = (HashTable<Goods>)hashTableGoods.Clone();
+                        //hashTableGoods.Add(new Goods("AddedTov", 99, 99));
+                        //var cloneHashTable = (HashTable<Goods>)hashTableGoods.Clone();
+                        //Console.WriteLine("Склонированная коллекция до изменения\n");
+                        //cloneHashTable.Print();
+
+                        //hashTableGoods.Remove(new Goods("AddedTov", 99, 99));
+                        //Console.WriteLine("Склонированая коллекция после изменения\n");
+                        //cloneHashTable.Print();
+                        hashTableGoods.Add(new Goods("AddedTov", 99, 99));
+                        HashTable<Goods> cloneHashTable = (HashTable<Goods>)hashTableGoods.Clone();
                         Console.WriteLine("Склонированная коллекция до изменения\n");
                         cloneHashTable.Print();
 
-                        hashTableGoods.Add(new Goods("AddedTov", 99, 99));
-                        Console.WriteLine("Склонированая коллекция после изменения\n");
+                        hashTableGoods.table[hashTableGoods.GetIndex(new Goods("AddedTov", 99, 99))].Value.Name = "New name";
+                        Console.WriteLine("Склонированная коллекция после изменения\n");
                         cloneHashTable.Print();
-                        
+
                         break;
                     case "8":
                         if (type == "goods")
@@ -229,28 +249,39 @@ namespace Lab_12_OOP
                             break;
                         }
                     case "10":
-                        if (type == "goods")
-                        {                                
-                            try
-                            {
-                                Console.WriteLine(hashTableGoods.FindPointKey(Menu.ReadInt("Введите ключ", "Ключ введен не верно")));
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e.Message);
-                            }
-                            break;
-                        }
-                        if (type == "product")
+                        //if (type == "goods")
+                        //{                                
+                        //    try
+                        //    {
+                        //        Console.WriteLine(hashTableGoods.FindPointKey(Menu.ReadInt("Введите ключ", "Ключ введен не верно")));
+                        //    }
+                        //    catch (Exception e)
+                        //    {
+                        //        Console.WriteLine(e.Message);
+                        //    }
+                        //    break;
+                        //}
+                        //if (type == "product")
+                        //{
+                        //    Console.WriteLine(hashTableProduct.FindPointKey(Menu.ReadInt("Введите ключ", "Ключ введен не верно")));
+                        //    break;
+                        //}
+                        //else
+                        //{
+                        //    Console.WriteLine("Хеш-таблица не создана");
+                        //    break;
+                        //}
+                        Console.WriteLine("Список всех элементов коллекции:");
+                        foreach (var item in hashTableGoods)
                         {
-                            Console.WriteLine(hashTableProduct.FindPointKey(Menu.ReadInt("Введите ключ", "Ключ введен не верно")));
-                            break;
+                            item.Show();
                         }
-                        else
-                        {
-                            Console.WriteLine("Хеш-таблица не создана");
-                            break;
-                        }
+                        Console.WriteLine("Введите элемент для удаления");
+                        Goods FindEl = new Goods();
+                        FindEl.Init();
+
+                        Console.WriteLine("Результат поиска: " + hashTableGoods.FindPoint(FindEl));
+                        break;
                     case "11":
                         if (type == "goods")
                         {

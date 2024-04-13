@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
@@ -47,16 +48,22 @@ namespace Lab_12_OOP
 
         public HashTable(HashTable<T> c)
         {
-            c.Size = this.Size;
-            c.table = this.table;
+            this.Size = table.Length;
+            for (int i = 0; i < Size; i++)
+            {
+                this.table[i] = c.table[i].Clone()
+            }
+            
         }
 
         public bool IsReadOnly => false;
 
-        private int GetIndex(T value)
+        public int GetIndex(T value)
         {
             HElement<T> point = new HElement<T>(value);
-            return Math.Abs(point.GetHashCode()) % Size;
+            if (Size != 0)
+                return Math.Abs(point.GetHashCode()) % Size;
+            else return 0;
         }
 
         public void Add(T v)
@@ -73,12 +80,14 @@ namespace Lab_12_OOP
                 if (Equals(current, point))
                 {
                     throw new ArgumentException("Элемент с таким ключом уже добавлен.");
+                    return;
                 }
                 while (current.next != null)
                 {
                     if (Equals(current, point))
                     {
                         throw new ArgumentException("Элемент с таким ключом уже добавлен.");
+                        return;
                     }
                     current = current.next;
                 }
@@ -201,13 +210,20 @@ namespace Lab_12_OOP
             return (HashTable<T>)MemberwiseClone();
         }
 
-        public virtual object Clone()
+        public object Clone()
         {
-            return new HashTable<T>
-            {
-                table = table,
-                Size = Size
-            };
+            return new HashTable<T>(this);
+            //return new HashTable<T>
+            //{
+            //    table = this.table,
+            //    Size = this.Size
+            //};
+            //HashTable<T> cloneTable = new HashTable<T>();
+            //foreach(var item in this)
+            //{
+            //    cloneTable.Add(item);
+            //}
+            //return cloneTable;
         }
 
 
@@ -247,7 +263,7 @@ namespace Lab_12_OOP
                 }
             }
             count = 0;
-            size = 0;
+            Size = 0;
         }
 
         public bool Contains(T item)
