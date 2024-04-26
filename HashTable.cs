@@ -48,10 +48,18 @@ namespace Lab_12_OOP
 
         public HashTable(HashTable<T> c)
         {
-            this.Size = table.Length;
+            if (c == null)
+            {
+                throw new NullReferenceException();
+            }
+            Size = c.Size;
+            table = new HElement<T>[Size];
             for (int i = 0; i < Size; i++)
             {
-                this.table[i] = c.table[i].Clone()
+                if (c.table[i] != null)
+                {
+                    table[i] = (HElement<T>)c.table[i].Clone();
+                }
             }
             
         }
@@ -161,6 +169,8 @@ namespace Lab_12_OOP
             return false;
         }
 
+
+
         public string FindPointKey(int key)
         {
             int index = Math.Abs(key) % Size;
@@ -213,19 +223,21 @@ namespace Lab_12_OOP
         public object Clone()
         {
             return new HashTable<T>(this);
-            //return new HashTable<T>
-            //{
-            //    table = this.table,
-            //    Size = this.Size
-            //};
-            //HashTable<T> cloneTable = new HashTable<T>();
-            //foreach(var item in this)
-            //{
-            //    cloneTable.Add(item);
-            //}
-            //return cloneTable;
         }
 
+        //public object Clone()
+        //{
+        //    HashTable<T> cloneTable = new HashTable<T>(this.Size);
+        //    for (int i = 0; i < cloneTable.Size; i++)
+        //    {
+        //        while (table[i] != null)
+        //        {
+        //            cloneTable.table[i] = new HElement<T>(table[i].Value);
+
+        //        }
+        //    }
+        //    return cloneTable;
+        //}
 
         public IEnumerator<T> GetEnumerator()
         {

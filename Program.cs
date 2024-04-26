@@ -61,7 +61,7 @@ namespace Lab_12_OOP
                 Console.WriteLine("0.Выход");
                 Console.Write("Выберите пункт: ");
                 choice = Console.ReadLine();
-                switch(choice)
+                switch (choice)
                 {
                     case "0":
                         break;
@@ -182,16 +182,25 @@ namespace Lab_12_OOP
                         hashTableGoods.Print();
                         break;
                     case "6":
-                        hashTableGoods.Add(new Goods("AddedTov", 99, 99));
-                        HashTable<Goods> copyHashTable = hashTableGoods.ShallowCopy();
-                        Console.WriteLine("Скопированная коллекция до изменения\n");
+                        Goods AddedTov = new Goods() { Name = "AddedTov", Price = 99, Weight = 99 };
+                        hashTableGoods.Add(AddedTov);
+                        Console.WriteLine("Оригинальная коллекция до изменения\n");
+                        hashTableGoods.Print();
+
+                        var copyHashTable = hashTableGoods.ShallowCopy();
+                        Console.WriteLine("Скопированная коллекция до изменения оригинальной");
                         copyHashTable.Print();
 
-                        hashTableGoods.table[hashTableGoods.GetIndex(new Goods("AddedTov", 99, 99))].Value.Name = "New name";
-                        Console.WriteLine("Скопированная коллекция после изменения\n");
+                        //hashTableGoods.table[hashTableGoods.GetIndex(new Goods("AddedTov", 99, 99))].Value.Name = "New name";
+                        Console.WriteLine(FindAndChangePoint(AddedTov, "ChangeName", hashTableGoods));
+
+                        Console.WriteLine("Оригинальная коллекция после изменения\n");
+                        hashTableGoods.Print();
+                        Console.WriteLine("Склонированная коллекция после изменения оригинальной коллекции\n");
                         copyHashTable.Print();
                         break;
                     case "7":
+                        AddedTov = new Goods() { Name = "AddedTov", Price = 99, Weight = 99 };
                         //hashTableGoods.Add(new Goods("AddedTov", 99, 99));
                         //var cloneHashTable = (HashTable<Goods>)hashTableGoods.Clone();
                         //Console.WriteLine("Склонированная коллекция до изменения\n");
@@ -200,15 +209,20 @@ namespace Lab_12_OOP
                         //hashTableGoods.Remove(new Goods("AddedTov", 99, 99));
                         //Console.WriteLine("Склонированая коллекция после изменения\n");
                         //cloneHashTable.Print();
-                        hashTableGoods.Add(new Goods("AddedTov", 99, 99));
-                        HashTable<Goods> cloneHashTable = (HashTable<Goods>)hashTableGoods.Clone();
-                        Console.WriteLine("Склонированная коллекция до изменения\n");
+                        hashTableGoods.Add(new Goods() { Name = "AddedTov", Price = 99, Weight = 99 });
+                        Console.WriteLine("\nОригинальная коллекция до изменения");
+                        hashTableGoods.Print();
+                        
+                        var cloneHashTable = (HashTable<Goods>)hashTableGoods.Clone();
+                        Console.WriteLine("\nСклонированная коллекция до изменения оригинальной");
                         cloneHashTable.Print();
-
-                        hashTableGoods.table[hashTableGoods.GetIndex(new Goods("AddedTov", 99, 99))].Value.Name = "New name";
-                        Console.WriteLine("Склонированная коллекция после изменения\n");
+                       
+                        //hashTableGoods.table[hashTableGoods.GetIndex(new Goods("AddedTov", 99, 99))].Value.Name = "New name";
+                        FindAndChangePoint(AddedTov, "ChangeName", hashTableGoods);
+                        Console.WriteLine("\nОригинальная коллекция после изменения");
+                        hashTableGoods.Print();
+                        Console.WriteLine("\nСклонированная коллекция после изменения оригинальной коллекции\n");
                         cloneHashTable.Print();
-
                         break;
                     case "8":
                         if (type == "goods")
@@ -303,6 +317,28 @@ namespace Lab_12_OOP
                 }
             } while (choice != "0");
 
+        }
+
+        public static bool FindAndChangePoint(Goods value, string changeName, HashTable<Goods> tableGoods)
+        {
+            HElement<Goods> point = new HElement<Goods>(value);
+            int index = Math.Abs(point.GetHashCode()) % tableGoods.Size;
+            if (Equals(point, tableGoods.table[index]))
+            {
+                tableGoods.table[index].Value.Name = changeName;
+                return true;
+            }
+            HElement<Goods> current = tableGoods.table[index];
+            while (current != null)
+            {
+                if (HElement<Goods>.Equals(point, current))
+                {
+                    current.Value.Name = changeName;
+                    return true;
+                }
+                current = current.next;
+            }
+            return false;
         }
 
         public static void CreateHashTable(HashTable<Goods> table)

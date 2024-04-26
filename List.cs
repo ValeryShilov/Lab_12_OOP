@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lab_12_OOP
 {
-    public class HElement<TValue>
+    public class HElement<TValue>: ICloneable
     {
         public int key;
         private TValue val;
@@ -29,6 +29,32 @@ namespace Lab_12_OOP
             Value = v;
             key = GetHashCode();
             next = null;
+        }
+
+        public HElement(HElement<TValue> c)
+        {
+            if (c == null)
+            {
+                throw new NullReferenceException();
+            }
+            this.key = c.key;
+            
+            HElement<TValue> current = c;
+            HElement<TValue> currentThis = this;
+
+            while (current != null)
+            {
+                currentThis.Value = (TValue)((ICloneable)current.Value).Clone();
+                currentThis.key = current.key;
+                if (current.next != null)
+                {
+                    current = current.next;
+                    currentThis.next = new HElement<TValue>();
+                    currentThis = currentThis.next;
+                }
+                else break;
+            }
+            currentThis.next = null;
         }
 
         public override int GetHashCode()
@@ -57,9 +83,9 @@ namespace Lab_12_OOP
             return false;
         }
 
-        public HElement<T> Clone()
+        public object Clone()
         {
-            return new HElement<T>(Value.Clone())
+            return new HElement<TValue>(this);
         }
     }
 }
